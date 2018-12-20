@@ -1,5 +1,7 @@
 import userModel from '../models/user'
 import logger from '../core/logger/app-logger'
+import jwt from 'jsonwebtoken'
+import mongoose from 'mongoose';
 
 const userController = { };
 userController.addUser = async(req,res) => {
@@ -41,15 +43,26 @@ userController.deleteUser =async(req,res) => {
     res.send('Delete failed..!');
   }
 }
+/**
+ * 登录验证
+ */
 userController.checkUser = async (req,res) => {
   let user = {
     username: req.body.username,
-    password: req.body.password
+    password: req.body.password,
   };
   try {
-    const res2 = await userModel.find(user);
-    res.send('User successfully finded');
-    logger.info(res2)
+    const data = await userModel.find(user);
+    const success = data ? 1 : 0; 
+    const secret ='haha';
+    const token = data ? jwt.sign({'username':data.username},secret,{ expiresIn:60*30 }) :null;
+    let decode;
+    jwt.verify(token, secret,(err,c) => {
+      if(err){ decode='无效Token'}
+      decode=c;
+    })
+    res.send({ success, data, token,decode});
+    //res.send('User successfully finded');
   }catch (err) {
     logger.error('Failed to find user-'+err);
     logger.error(err);

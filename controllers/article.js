@@ -4,7 +4,7 @@ import logger from '../core/logger/app-logger';
 const articleController = { };
 articleController.addArticle = async (req,res) => {
   let article = articleModel({
-  name: req.body.name,
+  title: req.body.title,
   create_date: Date.now(),
   update_date: Date.now(),
   label: req.body.label,
@@ -14,9 +14,10 @@ articleController.addArticle = async (req,res) => {
   });
   try {
     const data = await articleModel.add(article);
+    const success = data? 1:0;
     console.log(data);
     logger.info('Adding article...');
-    res.send(article);
+    res.send({success,data});
   }catch (err) {
     logger.error(err)
     logger.error('Error in add article-');
@@ -40,10 +41,10 @@ articleController.deleteArticle = async (req,res) => {
 articleController.getArticles = async (req,res) => {
   try {
     console.log(typeof req.query.count)
-    const articles = await articleModel.get(req.query.skip,req.query.limit,req.query.count);
-    console.log(articles);
+    const data = await articleModel.get(req.query.skip,req.query.limit,req.query.count);
+    console.log(data);
     logger.info('Getting article...');
-    res.send(!isNaN(articles)?{length:3}:articles);
+    res.send(!isNaN(data)?{length:data}:data);
   }catch (err) {
     logger.error(err)
     logger.error('Error in get article-');

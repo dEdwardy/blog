@@ -12,11 +12,11 @@ const commentSchema = new Schema({
 });
 //文章
 const articleSchema = new Schema({
-  name: { type: String },
+  title: { type: String },
   create_date: { type: Date },
   update_date:{ type: Date },
   label: { type: String },   //文章标签
-  can_delete: { type: Boolean },
+  can_delete: { type: Boolean,default:false },
   content: { type: String },
   image_url: { type: Array },
   comment: [commentSchema]
