@@ -46,8 +46,8 @@ articleModel.delete = (id) =>{
  * @param count 是否需要获取文章数量(用于分页时获取页数0 false 1 true)
  * @returns {*}
  */
-articleModel.get = (skip=0,limit=0,count=0) => {
-  return parseInt(count)===1?articleModel.find({}).count():articleModel.find({}).skip(Number(skip)).limit(Number(limit));
+articleModel.get = (_id={},skip=0,limit=0,count=0) => {
+  return parseInt(count)===1?articleModel.find({}).count():articleModel.find(_id).skip(Number(skip)).limit(Number(limit));
 };
 articleModel.update = (id,content) => {
   return articleModel.findOneAndUpdate(
