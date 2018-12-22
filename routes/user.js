@@ -16,4 +16,7 @@ userRouter.delete('/deleteUser', (req, res) => {
 userRouter.post('/checkUser', (req, res) => {
   userController.checkUser(req,res);
 });
+userRouter.post('/checkUsername', (req, res) => {
+  userController.uniqueUsername(req,res);
+});
 export default userRouter;

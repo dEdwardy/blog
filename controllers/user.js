@@ -1,8 +1,7 @@
 import userModel from '../models/user'
 import logger from '../core/logger/app-logger'
 import jwt from 'jsonwebtoken'
-import mongoose from 'mongoose';
-
+import config from '../core/config/config.dev'
 const userController = { };
 userController.addUser = async(req,res) => {
   let user = userModel({
@@ -54,20 +53,36 @@ userController.checkUser = async (req,res) => {
   try {
     const data = await userModel.find(user);
     const success = data ? 1 : 0; 
-    const secret ='haha';
-    const token = data ? jwt.sign({'username':data.username},secret,{ expiresIn:60*30 }) :null;
+    const secret =config.secret;
+    const token = data ? jwt.sign({'username':data.username},secret,{ expiresIn:10 }) : '';
     let decode;
-    jwt.verify(token, secret,(err,c) => {
+    jwt.verify(token, secret,(err,code) => {
       if(err){ decode='无效Token'}
-      decode=c;
-    })
-    res.send({ success, data, token,decode});
-    //res.send('User successfully finded');
+      decode=code;
+    });
+    if(data){ 
+      res.set('token',token); 
+    }
+    res.send({ success, data, token, decode });
   }catch (err) {
     logger.error('Failed to find user-'+err);
     logger.error(err);
     res.send('Find failed..!');
   }
 }
-
+/**
+ * 验证注册时username唯一性
+ */
+userController.uniqueUsername = async (req,res) => {
+  let username = req.body.username;
+  try {
+    const data = await userModel.find({username});
+    const result = data? 1:0;
+    res.send({result})
+  } catch (error) {
+    logger.error('Failed to find username-'+err);
+    logger.error(err);
+    res.send('Find failed..!');
+  }
+}
 export default userController;
