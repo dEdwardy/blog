@@ -25,7 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x
 app.use(morgan("dev", { "stream": logger.stream }));
 app.use('/api/*',async (req,res,next) => {
     let token = req.body.token || req.query.token || req.headers['x-access-token'] || req.headers.token;
-    if(req.baseUrl=='/api/users/checkUser'||'/api/articles/getArticles'||'/api/users/checkUsername'){
+    if(req.baseUrl=='/api/users/checkUser'||'/api/articles/getArticles'||'/api/users/checkEmail'){
         //登录注册以及查看文章时不需token
         return next();
     }else if(token){

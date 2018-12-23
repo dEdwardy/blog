@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 const userSchema = new mongoose.Schema({
   username:{ type: String },
   password: { type: String },
-  authority:{ type: Number, default:0 } //权限 默认0普通user
+  authority:{ type: Number, default:0 }, //权限 默认0普通user
+  email:{type: String, unique: true}
 },{
   collection: 'users',
   versionKey: false
