@@ -7,6 +7,7 @@ import config from './core/config/config.dev'
 import userRouter from './routes/user'
 import connectToDb from './db/connect'
 import articleRouter from './routes/article'
+import fileRouter from './routes/file'
 import jwt from 'jsonwebtoken'
 
 const port = config.serverPort;
@@ -25,7 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x
 app.use(morgan("dev", { "stream": logger.stream }));
 app.use('/api/*',async (req,res,next) => {
     let token = req.body.token || req.query.token || req.headers['x-access-token'] || req.headers.token;
-    if(req.baseUrl=='/api/users/checkUser'||'/api/articles/getArticles'||'/api/users/checkEmail'){
+    if(req.baseUrl=='/api/users/checkUser'||'/api/articles/getArticles'||'/api/users/checkEmail'||'/api/users/checkUsername'){
         //登录注册以及查看文章时不需token
         return next();
     }else if(token){
@@ -52,11 +53,7 @@ app.use('/api/*',async (req,res,next) => {
 })                              //api权限
 app.use('/api/users',userRouter);
 app.use('/api/articles',articleRouter);
-
-//Index route
-app.get('/', (req, res) => {
-    res.send('Invalid endpoint!');
-});
+app.use('/api/file',fileRouter);
 
 app.listen(port, () => {
     logger.info('server started - ', port);

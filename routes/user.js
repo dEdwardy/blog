@@ -13,10 +13,13 @@ userRouter.post('/addUser', (req, res) => {
 userRouter.delete('/deleteUser', (req, res) => {
   userController.deleteUser(req,res);
 });
+
 userRouter.post('/checkUser', (req, res) => {
   userController.checkUser(req,res);
 });
+
 userRouter.post('/checkEmail', (req, res) => {
   userController.uniqueEmail(req,res);
 });
+
 export default userRouter;

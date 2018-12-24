@@ -47,7 +47,7 @@ userController.deleteUser = async (req, res) => {
  */
 userController.checkUser = async (req, res) => {
   let user = {
-    username: req.body.username,
+    email: req.body.email,
     password: req.body.password,
   };
   try {
@@ -75,7 +75,6 @@ userController.checkUser = async (req, res) => {
  */
 userController.uniqueEmail = async (req, res) => {
   let email = req.body.email;
-  console.log(req.headers);
   try {
     const data = await userModel.find({ email });
     const result = data ? 1 : 0;
@@ -86,4 +85,5 @@ userController.uniqueEmail = async (req, res) => {
     res.send('Find failed..!');
   }
 }
+
 export default userController;
