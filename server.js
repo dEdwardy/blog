@@ -7,7 +7,6 @@ import config from './core/config/config.dev'
 import userRouter from './routes/user'
 import connectToDb from './db/connect'
 import articleRouter from './routes/article'
-import fileRouter from './routes/file'
 import jwt from 'jsonwebtoken'
 
 const port = config.serverPort;
@@ -53,8 +52,6 @@ app.use('/api/*',async (req,res,next) => {
 })                              //api权限
 app.use('/api/users',userRouter);
 app.use('/api/articles',articleRouter);
-app.use('/api/file',fileRouter);
-
 app.listen(port, () => {
     logger.info('server started - ', port);
 });
