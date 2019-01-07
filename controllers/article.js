@@ -1,8 +1,11 @@
 import articleModel from '../models/article';
 import logger from '../core/logger/app-logger';
+import 'fs';
+import 'path'
 
 const articleController = { };
 articleController.addArticle = async (req,res) => {
+  let content =req.body.content;
   let article = articleModel({
   title: req.body.title,
   create_date: Date.now(),
