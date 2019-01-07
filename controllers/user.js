@@ -6,12 +6,14 @@ const userController = {};
 userController.addUser = async (req, res) => {
   let user = userModel({
     username: req.body.username,
-    password: req.body.password
+    password: req.body.password,
+    email: req.body.email
   });
   try {
     const res1 = await userModel.addUser(user);
+    const success = res1 ? 1 : 0;
     logger.info('Adding user...');
-    res.send('added: ' + user);
+    res.send({success});
   }
   catch (err) {
     logger.error(err)
@@ -54,16 +56,16 @@ userController.checkUser = async (req, res) => {
     const data = await userModel.find(user);
     const success = data ? 1 : 0;
     const secret = config.secret;
-    const token = data ? jwt.sign({ 'username': data.username }, secret, { expiresIn: 10 }) : '';
+    const token = data ? jwt.sign({ 'username': data.username }, secret, { expiresIn:60*30 }) : '';
     let decode;
     jwt.verify(token, secret, (err, code) => {
       if (err) { decode = '无效Token' }
       decode = code;
     });
     if (data) {
-      res.set('token', token);
+      res.set('token', token); //设置响应头
     }
-    res.send({ success, data, token, decode });
+    res.send({ success, data, token });
   } catch (err) {
     logger.error('Failed to find user-' + err);
     logger.error(err);
@@ -71,14 +73,15 @@ userController.checkUser = async (req, res) => {
   }
 }
 /**
- * 验证注册时email唯一性
+ * 验证注册时email唯一性&&验证用户权限
  */
 userController.uniqueEmail = async (req, res) => {
   let email = req.body.email;
   try {
     const data = await userModel.find({ email });
-    const result = data ? 1 : 0;
-    res.send({ result })
+    const result = data ? 1 : 0;           //1. email存在 0 不存在
+    const authority = data ? data.authority : -1;    //authority: 1.admin 0.user -1.用户不存在
+    res.send({ result,authority})
   } catch (error) {
     logger.error('Failed to find email-' + err);
     logger.error(err);

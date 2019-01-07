@@ -44,7 +44,6 @@ articleController.getArticles = async (req,res) => {
     console.log('_id:'+req.query._id)
     const query =req.query._id ? {_id:req.query._id}:{ }; //判断查询为单个还是所有
     const data = await articleModel.get(query,req.query.skip,req.query.limit,req.query.count); //判断是否分页以及查询单个还是所有
-    console.log(data);
     logger.info('Getting article...');
     res.send(!isNaN(data)?{length:data}:{data});
   }catch (err) {

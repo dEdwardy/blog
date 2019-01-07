@@ -4,7 +4,8 @@ const userSchema = new mongoose.Schema({
   username:{ type: String },
   password: { type: String },
   authority:{ type: Number, default:0 }, //权限 默认0普通user
-  email:{type: String, unique: true}
+  email:{type: String, unique: true},
+  avatar: { type: String,default:"/upload/images/default.jpg"}
 },{
   collection: 'users',
   versionKey: false
@@ -13,7 +14,7 @@ const userSchema = new mongoose.Schema({
 let userModel = mongoose.model('user',userSchema);
 
 userModel.addUser = (user) =>{
-  return user.save({});
+  return user.save({}); 
 }
 userModel.delete =(username) => {
   return userModel.remove({username})
