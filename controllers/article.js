@@ -1,18 +1,35 @@
 import articleModel from '../models/article';
 import logger from '../core/logger/app-logger';
-import 'fs';
-import 'path'
+import { promisify } from 'util'
+import fs from 'fs';
+import path from 'path'
+const writeFile = promisify(fs.createWriteStream);
 
 const articleController = { };
 articleController.addArticle = async (req,res) => {
-  let content =req.body.content;
+  let content =req.body.content;  //富文本字符串
+  let src =content.match(/src=[\'\"]?([^\'\"]*)[\'\"]?/g); //正则截取图片src
+  if(src){
+    //带图片上传
+    //去掉base64编码前缀并区别图片类型
+    let imgData =src.map(
+      item => [
+        {
+          data:item.slice(27),
+          type:item.split(",")[0].match(/\/(\S*);/,"")[0].replace(/\/|;/g,"")
+        }
+      ]
+      );
+
+  }
+  let txt =content.replace(/<img.*?(?:>|>)/gi,"")  //筛选文本内容
   let article = articleModel({
   title: req.body.title,
   create_date: Date.now(),
   update_date: Date.now(),
   label: req.body.label,
   can_delete: req.body.can_delete,
-  content: req.body.content,
+  content: txt,
   image_url: req.body.imagel_url
   });
   try {
