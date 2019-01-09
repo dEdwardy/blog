@@ -1,15 +1,35 @@
 import articleModel from '../models/article';
 import logger from '../core/logger/app-logger';
+import { promisify } from 'util'
+import fs from 'fs';
+import path from 'path'
+const writeFile = promisify(fs.createWriteStream);
 
 const articleController = { };
 articleController.addArticle = async (req,res) => {
+  let content =req.body.content;  //富文本字符串
+  let src =content.match(/src=[\'\"]?([^\'\"]*)[\'\"]?/g); //正则截取图片src
+  if(src){
+    //带图片上传
+    //去掉base64编码前缀并区别图片类型
+    let imgData =src.map(
+      item => [
+        {
+          data:item.slice(27),
+          type:item.split(",")[0].match(/\/(\S*);/,"")[0].replace(/\/|;/g,"")
+        }
+      ]
+      );
+
+  }
+  let txt =content.replace(/<img.*?(?:>|>)/gi,"")  //筛选文本内容
   let article = articleModel({
   title: req.body.title,
   create_date: Date.now(),
   update_date: Date.now(),
   label: req.body.label,
   can_delete: req.body.can_delete,
-  content: req.body.content,
+  content: txt,
   image_url: req.body.imagel_url
   });
   try {
@@ -44,7 +64,6 @@ articleController.getArticles = async (req,res) => {
     console.log('_id:'+req.query._id)
     const query =req.query._id ? {_id:req.query._id}:{ }; //判断查询为单个还是所有
     const data = await articleModel.get(query,req.query.skip,req.query.limit,req.query.count); //判断是否分页以及查询单个还是所有
-    console.log(data);
     logger.info('Getting article...');
     res.send(!isNaN(data)?{length:data}:{data});
   }catch (err) {
