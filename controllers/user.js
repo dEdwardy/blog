@@ -48,6 +48,7 @@ userController.deleteUser = async (req, res) => {
  * 登录验证
  */
 userController.checkUser = async (req, res) => {
+  console.log(req.body)
   let user = {
     email: req.body.email,
     password: req.body.password,
@@ -78,17 +79,10 @@ userController.checkUser = async (req, res) => {
 userController.uniqueEmail = async (req, res) => {
   let email = req.body.email;
   try {
-<<<<<<< HEAD
-    const data = await userModel.findUser({ email });
-    console.log(data)
-    const result = data ? 1 : 0;
-    res.send({ result })
-=======
     const data = await userModel.find({ email });
     const result = data ? 1 : 0;           //1. email存在 0 不存在
     const authority = data ? data.authority : -1;    //authority: 1.admin 0.user -1.用户不存在
     res.send({ result,authority})
->>>>>>> 4f625c719720d1056b243b0930f4cd8574aa4db7
   } catch (error) {
     logger.error('Failed to find email-' + err);
     logger.error(err);

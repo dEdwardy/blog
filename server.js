@@ -20,15 +20,10 @@ logger.stream = {
 connectToDb();
 
 const app = express();
-app.use(express.static('public')); // Express 托管静态文件 
 app.use(cors());
-<<<<<<< HEAD
-app.use(express.static('public'))            //静态资源托管
-app.use(bodyParser.json());                         //for parsing application/json
-=======
 app.use(bodyParser.json()); //for parsing application/json
->>>>>>> 4f625c719720d1056b243b0930f4cd8574aa4db7
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(express.static('public')); // Express 托管静态文件 
 app.use(morgan("dev", { stream: logger.stream }));
 app.use("/api/*", async (req, res, next) => {
   let token =
