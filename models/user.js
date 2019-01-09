@@ -4,7 +4,8 @@ const userSchema = new mongoose.Schema({
   username:{ type: String },
   password: { type: String },
   authority:{ type: Number, default:0 }, //权限 默认0普通user
-  email:{type: String, unique: true}
+  email:{type: String, unique: true},
+  avatar:{ type:String, default:'/images/default.png' }
 },{
   collection: 'users',
   versionKey: false
@@ -21,7 +22,7 @@ userModel.delete =(username) => {
 userModel.get =() => {
   return userModel.find({});
 }
-userModel.find = (user) => {
-  return userModel.findOne(user,{ password:0 ,_id:0 }) //0不显示 1显示
+userModel.findUser = (user) => {
+  return userModel.findOne(user,{ password:0 ,_id:0 ,authority:1}) //0不显示 1显示
 }
 export default userModel;

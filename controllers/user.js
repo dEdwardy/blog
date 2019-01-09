@@ -51,7 +51,7 @@ userController.checkUser = async (req, res) => {
     password: req.body.password,
   };
   try {
-    const data = await userModel.find(user);
+    const data = await userModel.findUser(user);
     const success = data ? 1 : 0;
     const secret = config.secret;
     const token = data ? jwt.sign({ 'username': data.username }, secret, { expiresIn: 10 }) : '';
@@ -76,7 +76,8 @@ userController.checkUser = async (req, res) => {
 userController.uniqueEmail = async (req, res) => {
   let email = req.body.email;
   try {
-    const data = await userModel.find({ email });
+    const data = await userModel.findUser({ email });
+    console.log(data)
     const result = data ? 1 : 0;
     res.send({ result })
   } catch (error) {

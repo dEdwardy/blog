@@ -20,6 +20,7 @@ connectToDb();
 
 const app = express();
 app.use(cors());
+app.use(express.static('public'))            //静态资源托管
 app.use(bodyParser.json());                         //for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(morgan("dev", { "stream": logger.stream }));
