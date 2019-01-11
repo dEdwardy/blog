@@ -9,6 +9,7 @@ import connectToDb from "./db/connect";
 import articleRouter from "./routes/article";
 import fileRouter from "./upload/file";
 import jwt from "jsonwebtoken";
+import { fstat } from "fs";
 
 const port = config.serverPort;
 logger.stream = {
@@ -21,7 +22,7 @@ connectToDb();
 
 const app = express();
 app.use(cors());
-app.use(bodyParser.json()); //for parsing application/json
+app.use(bodyParser.json({limit:'50mb'})); //for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(express.static('public')); // Express 托管静态文件 
 app.use(morgan("dev", { stream: logger.stream }));

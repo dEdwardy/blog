@@ -48,7 +48,6 @@ userController.deleteUser = async (req, res) => {
  * 登录验证
  */
 userController.checkUser = async (req, res) => {
-  console.log(req.body)
   let user = {
     email: req.body.email,
     password: req.body.password,
