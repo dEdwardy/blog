@@ -72,13 +72,38 @@ articleController.getArticles = async (req, res) => {
   try {
     console.log(typeof req.query.count);
     console.log("_id:" + req.query._id);
-    const query = req.query._id ? { _id: req.query._id } : {}; //判断查询为单个还是所有
+    console.log(req.query)
+    const keyWords = req.query.keyWords;
+    const _id = req.query._id;
+    let query;
+    //const query = req.query._id ? { _id: req.query._id } : {}; //判断查询为单个还是所有
+    if(_id){
+      //根据Id查询
+      query = { _id  };
+      console.log('1')
+    }else{
+      if(keyWords){
+        //带关键字的模糊搜索
+        query = { $or:[
+          { title: { $regex: new RegExp(keyWords) } },
+          { label: { $regex: new RegExp(keyWords)} },
+          { content: { $regex:new RegExp(keyWords) } }
+        ] };
+        console.log('2')
+        console.log(keyWords)
+        console.log(query)
+      }else{
+        //查询所有
+        query = { };
+        console.log('3')
+      }
+    }
     const data = await articleModel.get(
       query,
       req.query.skip,
       req.query.limit,
       req.query.count
-    ); //判断是否分页以及查询单个还是所有
+    ); //判断是否分页以及根据Id查询单个还是所有
     logger.info("Getting article...");
     res.send(!isNaN(data) ? { length: data } : { data });
   } catch (err) {
@@ -87,6 +112,13 @@ articleController.getArticles = async (req, res) => {
     res.send("Got error in get article");
   }
 };
+articleController.getArticlesByKeyWords = async ( req, res ) => {
+  try {
+    const data = await articleModel.get()
+  } catch (error) {
+    console.log(error)
+  }
+}
 articleController.updateArticle = async (req, res) => {
   let id = req.body.id;
   let content = req.body.content;
