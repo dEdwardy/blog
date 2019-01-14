@@ -26,10 +26,10 @@ articleController.addArticle = async (req, res) => {
       })
     );
     arr.map((item,index) => {
-      let date = Date.now() + '-' + index + "." + item.type
+      let date = Date.now() + '-' + index + "." + item.type;
       item.filename = filePath + "/" + date;
       writeFile(item.filename, item.data)
-        .then(images.push('/images/'+date))
+        .then(images.push('/images/'+ date))
         .catch(err => console.log(err));
     });
   }
