@@ -39,7 +39,8 @@ app.use("/api/*", async (req, res, next) => {
     req.baseUrl == "/api/users/checkUser" ||
     req.baseUrl == "/api/articles/getArticles" ||
     req.baseUrl == "/api/users/checkEmail" ||
-    req.baseUrl == "/api/users/checkUsername"
+    req.baseUrl == "/api/users/checkUsername"||
+    req.baseUrl == "/api/users/addUser"
   ) {
     console.log(req.baseUrl)
     //登录注册以及查看文章时不需token
