@@ -1,8 +1,13 @@
 #dist
 dist
+<<<<<<< HEAD
 
 #public
 public
+=======
+#public 
+public 
+>>>>>>> cbf6b191f1a5a2724c9fcb8b93fbf11a09e07921
 # Logs
 logs
 log

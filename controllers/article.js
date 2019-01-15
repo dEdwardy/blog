@@ -1,5 +1,6 @@
 import articleModel from "../models/article";
 import logger from "../core/logger/app-logger";
+import nodejieba from 'nodejieba'
 import { promisify } from "util";
 import fs from "fs";
 import path from "path";
@@ -72,13 +73,45 @@ articleController.getArticles = async (req, res) => {
   try {
     console.log(typeof req.query.count);
     console.log("_id:" + req.query._id);
-    const query = req.query._id ? { _id: req.query._id } : {}; //判断查询为单个还是所有
+    console.log(req.query)
+    const keyWords = req.query.keyWords;
+    const _id = req.query._id;
+    let query;
+    //const query = req.query._id ? { _id: req.query._id } : {}; //判断查询为单个还是所有
+    if(_id){
+      //根据Id查询
+      query = { _id  };
+    }else{
+      if(keyWords){
+        //带关键字的模糊搜索
+        if(keyWords.indexOf('&')>0){
+          //以&符号分割的
+          let content = keyWords.split('&amp;').join('|')
+          console.log(content)
+          console.log(content.length)
+          query = { $or:[
+            { title: { $regex: new RegExp(content),$options:'xi' } },
+            { label: { $regex: new RegExp(content),$options:'xi'} },
+            { content: { $regex:new RegExp(content),$options:'xi' } }
+          ] };
+        }else{
+        query = { $or:[
+          { title: { $regex: new RegExp(keyWords) } },
+          { label: { $regex: new RegExp(keyWords)} },
+          { content: { $regex:new RegExp(keyWords) } }
+        ] };
+        }
+      }else{
+        //查询所有
+        query = { };
+      }
+    }
     const data = await articleModel.get(
       query,
       req.query.skip,
       req.query.limit,
       req.query.count
-    ); //判断是否分页以及查询单个还是所有
+    ); //判断是否分页以及根据Id查询单个还是所有
     logger.info("Getting article...");
     res.send(!isNaN(data) ? { length: data } : { data });
   } catch (err) {
@@ -87,6 +120,13 @@ articleController.getArticles = async (req, res) => {
     res.send("Got error in get article");
   }
 };
+articleController.getArticlesByKeyWords = async ( req, res ) => {
+  try {
+    const data = await articleModel.get()
+  } catch (error) {
+    console.log(error)
+  }
+}
 articleController.updateArticle = async (req, res) => {
   let id = req.body.id;
   let content = req.body.content;
