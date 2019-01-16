@@ -95,10 +95,11 @@ articleController.getArticles = async (req, res) => {
             { content: { $regex:new RegExp(content),$options:'xi' } }
           ] };
         }else{
+          let content = nodejieba.cut(keyWords).join('|')
         query = { $or:[
-          { title: { $regex: new RegExp(keyWords) } },
-          { label: { $regex: new RegExp(keyWords)} },
-          { content: { $regex:new RegExp(keyWords) } }
+          { title: { $regex: new RegExp(keyWords),$options:'xi' } },
+          { label: { $regex: new RegExp(keyWords),$options:'xi'} },
+          { content: { $regex:new RegExp(keyWords),$options:'xi' } }
         ] };
         }
       }else{
