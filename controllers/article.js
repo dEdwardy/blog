@@ -102,7 +102,7 @@ articleController.getArticles = async (req, res) => {
           ] };
         }else{
           
-          let content = nodejieba.cut(keyWords).join('|')
+          let content = nodejieba.cut(keyWords).join('|').toLowerCase();
           console.log
         query = { $or:[
           { title: { $regex: new RegExp(keyWords),$options:'xi' } },
