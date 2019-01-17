@@ -102,12 +102,18 @@ articleController.getArticles = async (req, res) => {
           ] };
         }else{
           
-          let content = nodejieba.cut(keyWords).join('|').toLowerCase();
-          console.log
+          let content=nodejieba.cut(keyWords).filter(item =>{
+            if(item.trim()!==''){
+              return item
+            }
+          }); //过滤空串
+          let str1 = content.join('.*');
+          let str2 = content.reverse().join('.*');
+          let res = str1+'|'+str2;
         query = { $or:[
-          { title: { $regex: new RegExp(keyWords),$options:'xi' } },
-          { label: { $regex: new RegExp(keyWords),$options:'xi'} },
-          { content: { $regex:new RegExp(keyWords),$options:'xi' } }
+          { title: { $regex: new RegExp(res),$options:'xi' } },
+          { label: { $regex: new RegExp(res),$options:'xi'} },
+          { content: { $regex:new RegExp(res),$options:'xi' } }
         ] };
         }
       }else{
