@@ -24,6 +24,7 @@
     "mongoose": "^4.8.6",
     "morgan": "^1.8.2",
     "multer": "^1.4.1",
+    "node-gyp": "^3.8.0",
     "nodejieba": "^2.3.0",
     "peer": "^0.2.10",
     "winston": "^2.3.1",

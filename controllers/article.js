@@ -7,7 +7,13 @@ import path from "path";
 const writeFile = promisify(fs.writeFile);
 const filePath = path.resolve("./public/images");
 const articleController = {};
-
+// 自定义dict  load 太慢   将userDict移至默认词典中
+//  let  load= () =>{    
+//   nodejieba.load({
+//     userDict: './dict/userdict.utf8'
+//   });
+//   load = function (){}
+// }
 articleController.addArticle = async (req, res) => {
   let content = req.body.content; //富文本字符串
   let src = content.match(/src=[\'\"]?([^\'\"]*)[\'\"]?/g); //正则截取图片src
@@ -95,7 +101,9 @@ articleController.getArticles = async (req, res) => {
             { content: { $regex:new RegExp(content),$options:'xi' } }
           ] };
         }else{
+          
           let content = nodejieba.cut(keyWords).join('|')
+          console.log
         query = { $or:[
           { title: { $regex: new RegExp(keyWords),$options:'xi' } },
           { label: { $regex: new RegExp(keyWords),$options:'xi'} },
@@ -105,6 +113,7 @@ articleController.getArticles = async (req, res) => {
       }else{
         //查询所有
         query = { };
+        
       }
     }
     const data = await articleModel.get(
