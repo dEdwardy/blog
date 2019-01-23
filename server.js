@@ -20,7 +20,8 @@ const corsOptions = {
     } else {
       callback(new Error('Not allowed by CORS'))
     }
-  }
+  },
+  maxAge:60*60
 }
 const port = config.serverPort;
 logger.stream = {
