@@ -11,7 +11,17 @@ import fileRouter from "./upload/file";
 import jwt from "jsonwebtoken";
 import  path  from 'path';
 
-
+//cors白名单
+const whitelist = ['http://106.12.202.20']
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) >= -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
 const port = config.serverPort;
 logger.stream = {
   write: function(message) {
@@ -22,7 +32,7 @@ logger.stream = {
 connectToDb();
 
 const app = express();
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(bodyParser.json({limit:'50mb'})); //for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(express.static(path.join(__dirname,'public'))); // Express 托管静态文件 
