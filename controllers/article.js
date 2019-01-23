@@ -178,5 +178,30 @@ articleController.addComment = async (req, res) => {
 };
 articleController.deleteComment = async (req, res) => {};
 articleController.getComments = async (req, res) => {};
-
+articleController.likeArticle = async (req, res) => {
+  let id = req.body.id;
+  let like = req.body.like
+  try {
+    const data = await articleModel.like(id,like);
+    res.send(data)
+    logger.info("Adding like ...");
+  } catch (error) {
+    logger.error(error);
+    logger.error("Error in add like-");
+    res.send("Got error in add like");
+  }
+}
+articleController.dislikeArticle = async (req, res) => {
+  let id = req.body.id;
+  let dislike = req.body.dislike
+  try {
+    const data = await articleModel.dislike(id,dislike);
+    res.send(data)
+    logger.info("Adding dislike ...");
+  } catch (error) {
+    logger.error(error);
+    logger.error("Error in add dislike-");
+    res.send("Got error in add dislike");
+  }
+}
 export default articleController;

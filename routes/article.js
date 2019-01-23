@@ -24,4 +24,10 @@ articleRouter.delete('/deleteComment',(req,res) => {
 articleRouter.get('/getComments',(req,res) => {
   articleController.getComments(req,res);
 });
+articleRouter.post('/likeArticle',(req,res) => {
+  articleController.likeArticle(req,res);
+})
+articleRouter.post('/dislikeArticle',(req,res) => {
+  articleController.dislikeArticle(req,res);
+})
 export default articleRouter;

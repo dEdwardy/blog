@@ -19,6 +19,8 @@ const articleSchema = new Schema({
   can_delete: { type: Boolean, default: false },
   content: { type: String },
   image_url: { type: Array },
+  like: { type: Number, default: 0 },
+  dislike: { type: Number, default: 0 },
   comment: [commentSchema]
 }, {
     collection: 'articles',
@@ -89,5 +91,15 @@ articleModel.getComments = (id) => {
     { comment: 1, _id: 0 }
   )
 };
-
+/**根据文章id 查找评论
+ * @param id 文章id
+ * @param like 1 like -1dislike
+ * @returns {*}
+ */
+articleModel.like = (id,like) => {
+  return articleModel.where({_id:ObjectId(id)}).update({ $inc:{ like } });
+}
+articleModel.dislike = (id,dislike) => {
+  return articleModel.where({_id:ObjectId(id)}).update({ $inc:{ dislike } });
+}
 export default articleModel;
