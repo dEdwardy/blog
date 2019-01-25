@@ -12,7 +12,7 @@ import jwt from "jsonwebtoken";
 import  path  from 'path';
 
 //cors白名单
-const whitelist = ['http://106.12.202.20']
+const whitelist = ['http://']
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) >= -1) {
