@@ -92,7 +92,7 @@ articleController.getArticles = async (req, res) => {
         //带关键字的模糊搜索
         if(keyWords.indexOf('&')>0){
           //以&符号分割的
-          let content = keyWords.split('&amp;').join('|')
+          let content = keyWords.split('&').join('|')
           console.log(content)
           console.log(content.length)
           query = { $or:[
@@ -102,11 +102,12 @@ articleController.getArticles = async (req, res) => {
           ] };
         }else{
           
-          let content=nodejieba.cut(keyWords).filter(item =>{
+          let content=nodejieba.cut(keyWords.toLowerCase()).filter(item =>{
             if(item.trim()!==''){
               return item
             }
           }); //过滤空串
+          console.log(content)
           let str1 = content.join('.*');
           let str2 = content.reverse().join('.*');
           let res = str1+'|'+str2;
