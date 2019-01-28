@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { SSL_OP_ALL } from 'constants';
 
 const ObjectId = mongoose.Types.ObjectId;
 const Schema = mongoose.Schema;
@@ -75,10 +76,15 @@ articleModel.addComment = (id, comment) => {
     { new: true }
   );
 };
-articleModel.deleteComment = (id) => {
+/**
+ * 根据文章Id 和 用户评论id删除评论
+ * @param id 文章Id
+ * @param commentId 用户评论Id
+ */
+articleModel.deleteComment = (id, commentId) => {
   return articleModel.findOneAndUpdate(
     { _id: ObjectId(id) },
-    { $pop },
+    { $pull:{ comment: { _id: ObjectId(commentId)} } },
     { new: true }
   )
 };

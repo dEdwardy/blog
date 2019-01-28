@@ -179,7 +179,20 @@ articleController.addComment = async (req, res) => {
     res.send({success:false});
   }
 };
-articleController.deleteComment = async (req, res) => {};
+articleController.deleteComment = async (req, res) => {
+  try {
+    let id = req.query.id;
+    let commentId = req.query.commentId;
+    console.log(id)
+    console.log(commentId)
+    const data = await articleModel.deleteComment(id,commentId);
+    res.send({success:true,data});
+  } catch (err) {
+    logger.error(err);
+    logger.error("Error in delete comment-");
+    res.send({success:false});
+  }
+};
 articleController.getComments = async (req, res) => {};
 articleController.likeArticle = async (req, res) => {
   let id = req.body.id;

@@ -11,8 +11,9 @@ import fileRouter from "./upload/file";
 import jwt from "jsonwebtoken";
 import  path  from 'path';
 
+
 //cors白名单
-const whitelist = ['http://']
+const whitelist = ['http://localhost:4200']
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) >= -1) {
@@ -29,16 +30,14 @@ logger.stream = {
     logger.info(message);
   }
 };
-
 connectToDb();
-
 const app = express();
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions)); 
 app.use(bodyParser.json({limit:'50mb'})); //for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(express.static(path.join(__dirname,'public'))); // Express 托管静态文件 
 app.use(morgan("dev", { stream: logger.stream }));
-app.use("/api/*", async (req, res, next) => {
+app.use("/api/*", cors(corsOptions) , async (req, res, next) => {
   let token =
     req.body.token ||
     req.query.token ||
@@ -81,9 +80,9 @@ app.use("/api/*", async (req, res, next) => {
     res.status(401).send("Not authoried!");
   }
 }); //api权限
-app.use("/api/users", userRouter);
-app.use("/api/articles", articleRouter);
-app.use("/api/files", fileRouter);
+app.use("/api/users",cors(corsOptions), userRouter);
+app.use("/api/articles", cors(corsOptions), articleRouter);
+app.use("/api/files", cors(corsOptions), fileRouter);
 app.listen(port, () => {
   logger.info("server started - ", port);
 });
