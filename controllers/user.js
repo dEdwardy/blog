@@ -56,7 +56,7 @@ userController.checkUser = async (req, res) => {
     const data = await userModel.findUser(user);
     const success = data ? 1 : 0;
     const secret = config.secret;
-    const token = data ? jwt.sign({ 'username': data.username }, secret, { expiresIn:'24h' }) : '';
+    const token = data ? jwt.sign({ 'username': data.username }, secret, { expiresIn:60*60*24 }) : '';
     let decode;
     jwt.verify(token, secret, (err, code) => {
       if (err) { decode = '无效Token' }

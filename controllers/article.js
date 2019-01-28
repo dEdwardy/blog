@@ -160,7 +160,9 @@ articleController.updateArticle = async (req, res) => {
 };
 articleController.addComment = async (req, res) => {
   let comment = {
-    create_by: req.body.create_by,
+    avatar: req.body.avatar,
+    name: req.body.name,
+    create_by: req.body.email,
     create_date: new Date(),
     content: req.body.content,
     type: req.body.type //1 评论 2 留言
@@ -169,12 +171,12 @@ articleController.addComment = async (req, res) => {
   try {
     const data = await articleModel.addComment(id, comment);
     console.log(data);
-    res.send(comment);
+    res.send({comment,success:true});
     logger.info("Adding comment...");
   } catch (err) {
     logger.error(err);
     logger.error("Error in add comment-");
-    res.send("Got error in add comment");
+    res.send({success:false});
   }
 };
 articleController.deleteComment = async (req, res) => {};

@@ -23,6 +23,6 @@ userModel.get =() => {
   return userModel.find({});
 }
 userModel.findUser = (user) => {
-  return userModel.findOne(user,{ password:0 ,_id:0 }) //0不显示 1显示
+  return userModel.findOne(user,{ password:0 }) //0不显示 1显示
 }
 export default userModel;

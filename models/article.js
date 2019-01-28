@@ -4,8 +4,9 @@ const ObjectId = mongoose.Types.ObjectId;
 const Schema = mongoose.Schema;
 //评论或留言
 const commentSchema = new Schema({
+  avatar: { type:String },
   name: { type: String },
-  create_by: { type: String },
+  create_by: { type: String },   /*即email*/
   create_date: { type: Date },
   content: { type: String },
   type: { type: Number }  //1 评论 2 留言
@@ -70,7 +71,7 @@ articleModel.update = (id, content) => {
 articleModel.addComment = (id, comment) => {
   return articleModel.findOneAndUpdate(
     { _id: ObjectId(id) },
-    { $push: { comment } },
+    { $push: { comment:{...comment,$sort:{ create_date: -1}} } },
     { new: true }
   );
 };
