@@ -22,4 +22,7 @@ userRouter.post('/checkEmail', (req, res) => {
   userController.uniqueEmail(req,res);
 });
 
+userRouter.put('/updateUser', (req, res) => {
+  userController.changePower(req,res);
+});
 export default userRouter;

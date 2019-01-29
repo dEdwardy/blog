@@ -13,7 +13,7 @@ import  path  from 'path';
 
 
 //cors白名单
-const whitelist = ['http://localhost:4200']
+const whitelist = ['http://localhost:4200','http://localhost:8088']
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) >= -1) {

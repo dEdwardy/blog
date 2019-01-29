@@ -33,9 +33,9 @@ userController.getUser = async (req, res) => {
   }
 }
 userController.deleteUser = async (req, res) => {
-  let username = req.body.username;
+  let email = req.body.email;
   try {
-    const removeUser = await userModel.delete(username);
+    const removeUser = await userModel.delete(email);
     logger.info('Deleted User- ' + removeUser);
     res.send('User successfully deleted');
   }
@@ -86,6 +86,16 @@ userController.uniqueEmail = async (req, res) => {
     logger.error('Failed to find email-' + err);
     logger.error(err);
     res.send('Find failed..!');
+  }
+}
+userController.changePower = async (req, res) => {
+  let id = req.body.id;
+  let power = req.body.power;
+  try {
+    await userModel.updateUser(id,power);
+    res.send({success:true})
+  } catch (err) {
+    console.log(err)
   }
 }
 
