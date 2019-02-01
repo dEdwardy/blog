@@ -13,10 +13,10 @@ import  path  from 'path';
 
 
 //cors白名单
-const whitelist = ['http://localhost:4200','http://localhost:8088','http://pv.sohu.com/cityjson?ie=utf-8']
+const whitelist = ['http://localhost:4200','http://localhost:8088','http://106.12.202.20','http://edw4rd.cn','http://www.edw4rd.cn']
 const corsOptions = {
   origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) > -1) {
+    if (whitelist.indexOf(origin) >= -1) {
       callback(null, true)
     } else {
       callback(new Error('Not allowed by CORS'))
@@ -80,6 +80,7 @@ app.use("/api/*", cors(corsOptions) , async (req, res, next) => {
     res.status(401).send("Not authoried!");
   }
 }); //api权限
+
 app.use("/api/users",cors(corsOptions), userRouter);
 app.use("/api/articles", cors(corsOptions), articleRouter);
 app.use("/api/files", cors(corsOptions), fileRouter);

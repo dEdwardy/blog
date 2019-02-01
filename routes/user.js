@@ -25,4 +25,5 @@ userRouter.post('/checkEmail', (req, res) => {
 userRouter.put('/updateUser', (req, res) => {
   userController.changePower(req,res);
 });
+
 export default userRouter;
