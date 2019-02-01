@@ -13,10 +13,10 @@ import  path  from 'path';
 
 
 //cors白名单
-const whitelist = ['http://localhost:4200','http://localhost:8088']
+const whitelist = ['http://localhost:4200','http://localhost:8088','http://pv.sohu.com/cityjson?ie=utf-8']
 const corsOptions = {
   origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) >= -1) {
+    if (whitelist.indexOf(origin) > -1) {
       callback(null, true)
     } else {
       callback(new Error('Not allowed by CORS'))

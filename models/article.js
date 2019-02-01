@@ -44,7 +44,7 @@ articleModel.add = (article) => {
 articleModel.delete = (id) => {
   return articleModel.deleteOne({ _id: ObjectId(id) });
 };
-/** 查询文章
+/** 查询文章（待优化）
  * @param params 文章查询条件
  * @param skip  文章跳过个数
  * @param limit 文章个数限制
