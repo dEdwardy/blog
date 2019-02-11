@@ -43,9 +43,6 @@ app.use("/api/*", cors(corsOptions) , async (req, res, next) => {
     req.query.token ||
     req.headers["x-access-token"] ||
     req.headers.token;
-  console.log("hhhhhhhhhhhhhhhhh");
-  console.log(req.headers);
-  console.log("token:" + token);
   if (
     req.baseUrl == "/api/users/checkUser" ||
     req.baseUrl == "/api/articles/getArticles" ||

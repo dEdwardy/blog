@@ -60,7 +60,6 @@ userController.checkUser = async (req, res) => {
   try {
     const data = await userModel.findUser(user);
     const records = await userModel.makeRecords(user.email,record);
-    logger.info(records)
     const success = (data && records) ? 1 : 0;
     const secret = config.secret;
     const token = data ? jwt.sign({ 'username': data.username }, secret, { expiresIn:60*60*24 }) : '';
