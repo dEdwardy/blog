@@ -55,7 +55,7 @@ userController.checkUser = async (req, res) => {
   let record = { 
     date:new Date(),
     ip: req.ip,
-    user_agent:req['user-agent']
+    user_agent:req.headers['user-agent']
   };
   try {
     const data = await userModel.findUser(user);
