@@ -68,8 +68,8 @@ userController.checkUser = async (req, res) => {
       decode = code;
     });
     if (data) {
-      const records = await userModel.makeRecords(user.email,record);
-      res.set('token', token,records); //设置响应头
+      // const records = await userModel.makeRecords(user.email,record);
+      res.set('token', token); //设置响应头
     }
     res.send({ success, data, token });
   } catch (err) {
