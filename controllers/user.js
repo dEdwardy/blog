@@ -52,9 +52,16 @@ userController.checkUser = async (req, res) => {
     email: req.body.email,
     password: req.body.password,
   };
+  let record = { 
+    date:new Date(),
+    ip: req.ip,
+    user_agent:req['user-agent']
+  };
   try {
     const data = await userModel.findUser(user);
-    const success = data ? 1 : 0;
+    const records = await userModel.makeRecords(user.email,record);
+    logger.info(records)
+    const success = (data && records) ? 1 : 0;
     const secret = config.secret;
     const token = data ? jwt.sign({ 'username': data.username }, secret, { expiresIn:60*60*24 }) : '';
     let decode;
@@ -63,7 +70,7 @@ userController.checkUser = async (req, res) => {
       decode = code;
     });
     if (data) {
-      res.set('token', token); //设置响应头
+      res.set('token', token,records); //设置响应头
     }
     res.send({ success, data, token });
   } catch (err) {
@@ -94,6 +101,16 @@ userController.changePower = async (req, res) => {
   try {
     await userModel.updateUser(id,power);
     res.send({success:true})
+  } catch (err) {
+    console.log(err)
+  }
+}
+userController.changeRecords = async (req, res) => {
+  let id = req.body.id;
+  
+  try {
+    await userModel.makeRecords(id,records);
+    res.send({ success: true})
   } catch (err) {
     console.log(err)
   }

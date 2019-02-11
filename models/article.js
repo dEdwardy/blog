@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { SSL_OP_ALL } from 'constants';
 
 const ObjectId = mongoose.Types.ObjectId;
 const Schema = mongoose.Schema;

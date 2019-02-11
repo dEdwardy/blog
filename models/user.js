@@ -5,7 +5,8 @@ const userSchema = new mongoose.Schema({
   password: { type: String },
   authority:{ type: Number, default:0 }, //权限 默认0普通user   1 admin   2 禁止留言,评论  3 禁止登录
   email:{type: String, unique: true},
-  avatar: { type: String,default:"/images/default.jpg"}
+  avatar: { type: String,default:"/images/default.jpg"},
+  lastLoginTime:[]
 },{
   collection: 'users',
   versionKey: false
@@ -29,6 +30,13 @@ userModel.updateUser = (id,power) => {
   return userModel.findOneAndUpdate(
     { _id: id },
     { $set: { authority: power } },
+    { new: true }
+  )
+}
+userModel.makeRecords = (email,records) => {
+  return userModel.findOneAndUpdate(
+    { email:email },
+    { $push: { lastLoginTime: records  } },
     { new: true }
   )
 }
