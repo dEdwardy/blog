@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { resolve } from "dns";
 
 const userSchema = new mongoose.Schema(
   {
@@ -42,24 +43,29 @@ userModel.makeRecords = async (email, records) => {
     { $match: { email } },
     { $project: { count: { $size: "$lastLoginTime" } } }
   ]);
-  return data[0].count >= 30
-    ? userModel
-        .findOneAndUpdate(
-          { email: email },
+  function pop(){
+    return new Promise((resolve) => {
+       resolve(
+        userModel.findOneAndUpdate(
+          { email },
           { $pop: { lastLoginTime: -1 } },
           { new: true }
         )
-        .then(() => {
-          userModel.findOneAndUpdate(
-            { email: email },
-            { $push: { lastLoginTime: records } },
-            { new: true }
-          );
-        })
-    : userModel.findOneAndUpdate(
-        { email: email },
-        { $push: { lastLoginTime: records } },
-        { new: true }
-      );
+       )
+      })
+  }
+  function push(){
+    return new Promise((resolve) => {
+      resolve(
+       userModel.findOneAndUpdate(
+         { email },
+         { $push: { lastLoginTime: records } },
+         { new: true }
+       )
+      )
+     });
+  }
+  const maintain = Promise.all([pop(), push()]);
+  return data[0].count >= 6 ? maintain : push();
 };
 export default userModel;
