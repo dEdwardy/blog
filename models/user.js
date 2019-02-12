@@ -66,6 +66,6 @@ userModel.makeRecords = async (email, records) => {
      });
   }
   const maintain = Promise.all([pop(), push()]);
-  return data[0].count >= 6 ? maintain : push();
+  return data[0].count >= 30 ? maintain : push();
 };
 export default userModel;
