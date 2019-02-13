@@ -104,16 +104,15 @@ userController.changePower = async (req, res) => {
     console.log(err)
   }
 }
-userController.changeRecords = async (req, res) => {
-  let id = req.body.id;
-  
+userController.getLoginLog = async (req, res) => {
+  let email = req.body.email;
   try {
-    await userModel.makeRecords(id,records);
-    res.send({ success: true})
+    let data = await userModel.get({ email })
+    let success = data ? true :false;
+    res.send({ success, data })
   } catch (err) {
     console.log(err)
   }
 }
-
 
 export default userController;
