@@ -49,11 +49,20 @@ articleModel.delete = (id) => {
  * @param count 是否需要获取文章数量(用于分页时获取页数0 false 1 true)
  * @param sort 排序方式  默认以时间降序排列
  * @returns {*}
- */
+*/
+
+// articleModel.get = (params = {}, skip = 0, limit = 0, count = 0, sort={create_date:-1}) => {
+//   return parseInt(count) === 1 ?
+//     articleModel.find(params).count().sort(sort)
+//     : articleModel.find(params).skip(Number(skip)).limit(Number(limit)).sort(sort);
+// };
+
+/***Promsie.all优化 ****/
 articleModel.get = (params = {}, skip = 0, limit = 0, count = 0, sort={create_date:-1}) => {
-  return parseInt(count) === 1 ?
-    articleModel.find(params).count().sort(sort)
-    : articleModel.find(params).skip(Number(skip)).limit(Number(limit)).sort(sort);
+  return Promise.all([
+    articleModel.find(params).count().sort(sort),
+    articleModel.find(params).skip(Number(skip)).limit(Number(limit)).sort(sort)
+  ]).then(res =>res)
 };
 articleModel.update = (id, content) => {
   return articleModel.findOneAndUpdate(
