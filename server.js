@@ -13,11 +13,7 @@ import  path  from 'path';
 
 
 //cors白名单
-<<<<<<< HEAD
-const whitelist = ['http://106.12.202.20','http:localhost']
-=======
 const whitelist = ['http://localhost:4200','http://localhost:8088','http://106.12.202.20','http://edw4rd.cn','http://www.edw4rd.cn']
->>>>>>> f001557fd6e7027936dbecf255a925cc7ac4ee54
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) >= -1) {

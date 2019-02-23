@@ -159,12 +159,8 @@ articleController.getArticles = async (req, res) => {
             { content: { $regex:new RegExp(content),$options:'xi' } }
           ] };
         }else{
-<<<<<<< HEAD
-          let content=nodejieba.cut(keyWords).filter(item =>{
-=======
           
           let content=nodejieba.cut(keyWords.toLowerCase()).filter(item =>{
->>>>>>> f001557fd6e7027936dbecf255a925cc7ac4ee54
             if(item.trim()!==''){
               return item
             }
