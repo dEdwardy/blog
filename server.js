@@ -11,8 +11,13 @@ import fileRouter from "./upload/file";
 import jwt from "jsonwebtoken";
 import  path  from 'path';
 
+
 //cors白名单
+<<<<<<< HEAD
 const whitelist = ['http://106.12.202.20','http:localhost']
+=======
+const whitelist = ['http://localhost:4200','http://localhost:8088','http://106.12.202.20','http://edw4rd.cn','http://www.edw4rd.cn']
+>>>>>>> f001557fd6e7027936dbecf255a925cc7ac4ee54
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) >= -1) {
@@ -29,24 +34,19 @@ logger.stream = {
     logger.info(message);
   }
 };
-
 connectToDb();
-
 const app = express();
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions)); 
 app.use(bodyParser.json({limit:'50mb'})); //for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(express.static(path.join(__dirname,'public'))); // Express 托管静态文件 
 app.use(morgan("dev", { stream: logger.stream }));
-app.use("/api/*", async (req, res, next) => {
+app.use("/api/*", cors(corsOptions) , async (req, res, next) => {
   let token =
     req.body.token ||
     req.query.token ||
     req.headers["x-access-token"] ||
     req.headers.token;
-  console.log("hhhhhhhhhhhhhhhhh");
-  console.log(req.headers);
-  console.log("token:" + token);
   if (
     req.baseUrl == "/api/users/checkUser" ||
     req.baseUrl == "/api/articles/getArticles" ||
@@ -81,9 +81,10 @@ app.use("/api/*", async (req, res, next) => {
     res.status(401).send("Not authoried!");
   }
 }); //api权限
-app.use("/api/users", userRouter);
-app.use("/api/articles", articleRouter);
-app.use("/api/files", fileRouter);
+
+app.use("/api/users",cors(corsOptions), userRouter);
+app.use("/api/articles", cors(corsOptions), articleRouter);
+app.use("/api/files", cors(corsOptions), fileRouter);
 app.listen(port, () => {
   logger.info("server started - ", port);
 });

@@ -150,7 +150,7 @@ articleController.getArticles = async (req, res) => {
         //带关键字的模糊搜索
         if(keyWords.indexOf('&')>0){
           //以&符号分割的
-          let content = keyWords.split('&amp;').join('|')
+          let content = keyWords.split('&').join('|')
           console.log(content)
           console.log(content.length)
           query = { $or:[
@@ -159,11 +159,17 @@ articleController.getArticles = async (req, res) => {
             { content: { $regex:new RegExp(content),$options:'xi' } }
           ] };
         }else{
+<<<<<<< HEAD
           let content=nodejieba.cut(keyWords).filter(item =>{
+=======
+          
+          let content=nodejieba.cut(keyWords.toLowerCase()).filter(item =>{
+>>>>>>> f001557fd6e7027936dbecf255a925cc7ac4ee54
             if(item.trim()!==''){
               return item
             }
           }); //过滤空串
+          console.log(content)
           let str1 = content.join('.*');
           let str2 = content.reverse().join('.*');
           let res = str1+'|'+str2;
@@ -218,7 +224,9 @@ articleController.updateArticle = async (req, res) => {
 };
 articleController.addComment = async (req, res) => {
   let comment = {
-    create_by: req.body.create_by,
+    avatar: req.body.avatar,
+    name: req.body.name,
+    create_by: req.body.email,
     create_date: new Date(),
     content: req.body.content,
     type: req.body.type //1 评论 2 留言
@@ -227,15 +235,28 @@ articleController.addComment = async (req, res) => {
   try {
     const data = await articleModel.addComment(id, comment);
     console.log(data);
-    res.send(comment);
+    res.send({comment,success:true});
     logger.info("Adding comment...");
   } catch (err) {
     logger.error(err);
     logger.error("Error in add comment-");
-    res.send("Got error in add comment");
+    res.send({success:false});
   }
 };
-articleController.deleteComment = async (req, res) => {};
+articleController.deleteComment = async (req, res) => {
+  try {
+    let id = req.query.id;
+    let commentId = req.query.commentId;
+    console.log(id)
+    console.log(commentId)
+    const data = await articleModel.deleteComment(id,commentId);
+    res.send({success:true,data});
+  } catch (err) {
+    logger.error(err);
+    logger.error("Error in delete comment-");
+    res.send({success:false});
+  }
+};
 articleController.getComments = async (req, res) => {};
 articleController.likeArticle = async (req, res) => {
   let id = req.body.id;

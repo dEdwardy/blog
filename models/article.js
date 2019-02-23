@@ -4,8 +4,9 @@ const ObjectId = mongoose.Types.ObjectId;
 const Schema = mongoose.Schema;
 //评论或留言
 const commentSchema = new Schema({
+  avatar: { type:String },
   name: { type: String },
-  create_by: { type: String },
+  create_by: { type: String },   /*即email*/
   create_date: { type: Date },
   content: { type: String },
   type: { type: Number }  //1 评论 2 留言
@@ -42,7 +43,7 @@ articleModel.add = (article) => {
 articleModel.delete = (id) => {
   return articleModel.deleteOne({ _id: ObjectId(id) });
 };
-/** 查询文章
+/** 查询文章（待优化）
  * @param params 文章查询条件
  * @param skip  文章跳过个数
  * @param limit 文章个数限制
@@ -79,14 +80,19 @@ articleModel.update = (id, content) => {
 articleModel.addComment = (id, comment) => {
   return articleModel.findOneAndUpdate(
     { _id: ObjectId(id) },
-    { $push: { comment } },
+    { $push: { comment:{...comment,$sort:{ create_date: -1}} } },
     { new: true }
   );
 };
-articleModel.deleteComment = (id) => {
+/**
+ * 根据文章Id 和 用户评论id删除评论
+ * @param id 文章Id
+ * @param commentId 用户评论Id
+ */
+articleModel.deleteComment = (id, commentId) => {
   return articleModel.findOneAndUpdate(
     { _id: ObjectId(id) },
-    { $pop },
+    { $pull:{ comment: { _id: ObjectId(commentId)} } },
     { new: true }
   )
 };
