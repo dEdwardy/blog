@@ -206,10 +206,13 @@ articleController.getArticlesByKeyWords = async ( req, res ) => {
 }
 articleController.updateArticle = async (req, res) => {
   let id = req.body.id;
+  let title = req.body.title;
+  let label = req.body.label;
   let content = req.body.content;
   try {
-    const data = await articleModel.update(id, content);
-    res.send(data);
+    const data = await articleModel.update(id,title,label,content);
+    const success = data ? true: false;
+    res.send({success,data});
     console.log(data);
     logger.info("Updating article...");
   } catch (e) {

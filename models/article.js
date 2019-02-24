@@ -65,10 +65,10 @@ articleModel.get = (params = {}, skip = 0, limit = 0, count = 0, sort={create_da
     articleModel.find(params).skip(Number(skip)).limit(Number(limit)).sort(sort)
   ]).then(res =>res)
 };
-articleModel.update = (id, content) => {
+articleModel.update = (id, title, label, content) => {
   return articleModel.findOneAndUpdate(
     { _id: ObjectId(id) },
-    { $set: { content: content } },
+    { $set: { title,label,content } },
     { new: true }
   );
 };
