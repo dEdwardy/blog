@@ -16,5 +16,5 @@ config.imageStorage = multer.diskStorage({
     cb(null,Date.now()+'-'+file.originalname);
   }
 })
-
+config.imgPathHead = 'http://localhost:8088/';
 export default config;

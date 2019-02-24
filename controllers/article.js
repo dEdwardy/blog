@@ -1,5 +1,6 @@
 import articleModel from "../models/article";
 import logger from "../core/logger/app-logger";
+import  config from '../core/config/config.dev'
 import nodejieba from 'nodejieba'
 import { promisify } from "util";
 import fs from "fs";
@@ -16,7 +17,8 @@ const articleController = {};
 // }
 articleController.addArticle = async (req, res) => {
   let content = req.body.content; //富文本字符串
-  let src = content.match(/src=[\'\"]?([^\'\"]*)[\'\"]?/g); //正则截取图片src
+  // let src = content.match(/src=[\'\"]?([^\'\"]*)[\'\"]?/g);
+  let src = content.match(/src=[\'\"]data:image[\'\"]?([^\'\"]*)[\'\"]?/g);    //正则截取图片src (base64格式的image)
   let arr = []; //图片信息
   let images = []; //图片地址
   if (src) {
@@ -39,15 +41,18 @@ articleController.addArticle = async (req, res) => {
         .then(images.push('/images/'+ name))
         .catch(err => console.log(err));
     });
-  }
-  let txt = content.replace(/<img.*?(?:>|>)/gi, ""); //筛选文本内容
+  } 
+  images.map(item => {
+    content = content.replace(/[\'\"]data:image[\'\"]?([^\'\"]*)[\'\"]?/,'\"'+config.imgPathHead+item+'\"')
+  })
+  // let txt = content.replace(/<img.*?(?:>|>)/gi, '); //筛选文本内容
   let article = articleModel({
     title: req.body.title,
     create_date: Date.now(),
     update_date: Date.now(),
     label: req.body.label,
     can_delete: req.body.can_delete,
-    content: txt,
+    content,
     image_url: images
   });
   try {
