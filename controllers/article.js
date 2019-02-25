@@ -15,6 +15,9 @@ const articleController = {};
 //   });
 //   load = function (){}
 // }
+/**
+ * 新建文章
+ */
 articleController.addArticle = async (req, res) => {
   let content = req.body.content; //富文本字符串
   // let src = content.match(/src=[\'\"]?([^\'\"]*)[\'\"]?/g);
@@ -80,64 +83,54 @@ articleController.deleteArticle = async (req, res) => {
     res.send("Got error in delete article");
   }
 };
-// articleController.getArticles = async (req, res) => {
-//   try {
-//     const keyWords = req.query.keyWords;
-//     const _id = req.query._id;
-//     let query;
-//     //const query = req.query._id ? { _id: req.query._id } : {}; //判断查询为单个还是所有
-//     if(_id){
-//       //根据Id查询
-//       query = { _id  };
-//     }else{
-//       if(keyWords){
-//         //带关键字的模糊搜索
-//         if(keyWords.indexOf('&')>0){
-//           //以&符号分割的
-//           let content = keyWords.split('&amp;').join('|')
-//           console.log(content)
-//           console.log(content.length)
-//           query = { $or:[
-//             { title: { $regex: new RegExp(content),$options:'xi' } },
-//             { label: { $regex: new RegExp(content),$options:'xi'} },
-//             { content: { $regex:new RegExp(content),$options:'xi' } }
-//           ] };
-//         }else{
-          
-//           let content=nodejieba.cut(keyWords).filter(item =>{
-//             if(item.trim()!==''){
-//               return item
-//             }
-//           }); //过滤空串
-//           let str1 = content.join('.*');
-//           let str2 = content.reverse().join('.*');
-//           let res = str1+'|'+str2;
-//         query = { $or:[
-//           { title: { $regex: new RegExp(res),$options:'xi' } },
-//           { label: { $regex: new RegExp(res),$options:'xi'} },
-//           { content: { $regex:new RegExp(res),$options:'xi' } }
-//         ] };
-//         }
-//       }else{
-//         //查询所有
-//         query = { };
-        
-//       }
-//     }
-//     const data = await articleModel.get(
-//       query,
-//       req.query.skip,
-//       req.query.limit,
-//       req.query.count
-//     ); //判断是否分页以及根据Id查询单个还是所有
-//     logger.info("Getting article...");
-//     res.send(!isNaN(data) ? { length: data } : { data });
-//   } catch (err) {
-//     logger.error(err);
-//     logger.error("Error in get article-");
-//     res.send("Got error in get article");
-//   }
-// };
+/**
+ * 修改文章
+ */
+articleController.updateArticle = async (req, res) => {
+  let content = req.body.content; //富文本字符串
+  let src = content.match(/src=[\'\"]data:image[\'\"]?([^\'\"]*)[\'\"]?/g);    //正则截取图片src (base64格式的image)
+  let arr = []; //图片信息
+  let images = []; //图片地址
+  if (src) {
+    //带图片上传
+    //去掉base64编码前缀并区别图片类型
+    let imgData = src.map(item =>
+      arr.push({
+        data: new Buffer(item.slice(27), "base64"),
+        type: item
+          .split(",")[0]
+          .match(/\/(\S*);/, "")[0]
+          .replace(/\/|;/g, ""),
+        filename: ""
+      })
+    );
+    arr.map((item,index) => {
+      let name =  Date.now() + '-' + index + "." + item.type
+      item.filename = filePath + "/" + name;
+      writeFile(item.filename, item.data)
+        .then(images.push('/images/'+ name))
+        .catch(err => console.log(err));
+    });
+  } 
+  images.map(item => {
+    content = content.replace(/[\'\"]data:image[\'\"]?([^\'\"]*)[\'\"]?/,'\"'+config.imgPathHead+item+'\"')
+  })
+  let id = req.body.id;
+  let title = req.body.title;
+  let label = req.body.label;
+  try {
+    const data = await articleModel.update(id,title,label,content);
+    const success = data ? true: false;
+    res.send({success,data});
+    console.log(data);
+    logger.info("Updating article...");
+  } catch (e) {
+    logger.error(e);
+    logger.error("Error in update article-");
+    res.send("Got error in update article");
+  }
+};
+
 /**
  * 优化后的查询
  */
@@ -209,23 +202,7 @@ articleController.getArticlesByKeyWords = async ( req, res ) => {
     console.log(error)
   }
 }
-articleController.updateArticle = async (req, res) => {
-  let id = req.body.id;
-  let title = req.body.title;
-  let label = req.body.label;
-  let content = req.body.content;
-  try {
-    const data = await articleModel.update(id,title,label,content);
-    const success = data ? true: false;
-    res.send({success,data});
-    console.log(data);
-    logger.info("Updating article...");
-  } catch (e) {
-    logger.error(e);
-    logger.error("Error in update article-");
-    res.send("Got error in update article");
-  }
-};
+
 articleController.addComment = async (req, res) => {
   let comment = {
     avatar: req.body.avatar,
