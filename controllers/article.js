@@ -148,7 +148,9 @@ articleController.getArticles = async (req, res) => {
         //带关键字的模糊搜索
         if(keyWords.indexOf('&')>0){
           //以&符号分割的
-          let content = keyWords.split('&').join('|')
+          let str =keyWords.replace(/\s+/g, ""); //去掉空格
+          console.log(str)
+          let content = str.split('&amp;').join('|')
           console.log(content)
           console.log(content.length)
           query = { $or:[
@@ -157,16 +159,22 @@ articleController.getArticles = async (req, res) => {
             { content: { $regex:new RegExp(content),$options:'xi' } }
           ] };
         }else{
-          
-          let content=nodejieba.cut(keyWords.toLowerCase()).filter(item =>{
-            if(item.trim()!==''){
-              return item
-            }
-          }); //过滤空串
+          console.log(keyWords)
+          let str = keyWords.replace(/\s+/g, "");
+          str = str.toLowerCase();
+          console.log('str:'+str)
+          let content=nodejieba.cut(str)
+          // let content=nodejieba.cut(keyWords.toLowerCase()).filter(item =>{
+          //   if(item.trim()!==''){
+          //     return item
+          //   }
+          // }); //过滤空串
           console.log(content)
           let str1 = content.join('.*');
           let str2 = content.reverse().join('.*');
           let res = str1+'|'+str2;
+          console.log('res:')
+          console.log(res)
         query = { $or:[
           { title: { $regex: new RegExp(res),$options:'xi' } },
           { label: { $regex: new RegExp(res),$options:'xi'} },
