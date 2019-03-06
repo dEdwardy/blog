@@ -21,7 +21,7 @@ let logger = new winston.Logger({
             dirname: config.logFileDir,
             maxsize: 20971520, //20MB
             maxFiles: 25,
-            datePattern: '.dd-MM-yyyy'
+            datePattern: '.yyyy-MM-dd'
         })
     ]
 });
