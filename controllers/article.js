@@ -62,7 +62,7 @@ articleController.addArticle = async (req, res) => {
     const data = await articleModel.add(article);
     const success = data ? 1 : 0;
     console.log(data);
-    logger.info("Adding article...");
+    logger.info("Adding article..."+",ip="+req.ip);
     res.send({ success, data });
   } catch (err) {
     logger.error(err);
@@ -75,7 +75,7 @@ articleController.deleteArticle = async (req, res) => {
   try {
     const data = await articleModel.delete(id);
     console.log(data);
-    logger.info("Deleting article...");
+    logger.info("Deleting article..."+",ip="+req.ip);
     res.send(data);
   } catch (err) {
     logger.error(err);
@@ -123,7 +123,7 @@ articleController.updateArticle = async (req, res) => {
     const success = data ? true: false;
     res.send({success,data});
     console.log(data);
-    logger.info("Updating article...");
+    logger.info("Updating article..."+",ip="+req.ip);
   } catch (e) {
     logger.error(e);
     logger.error("Error in update article-");
@@ -193,7 +193,7 @@ articleController.getArticles = async (req, res) => {
       req.query.limit,
       req.query.count
     ); //判断是否分页以及根据Id查询单个还是所有
-    logger.info("Getting article...");
+    logger.info("Getting article..."+",ip="+req.ip);
     res.send( { length,data });
   } catch (err) {
     logger.error(err);
@@ -225,7 +225,7 @@ articleController.addComment = async (req, res) => {
     const data = await articleModel.addComment(id, comment);
     console.log(data);
     res.send({comment,success:true});
-    logger.info("Adding comment...");
+    logger.info("Adding comment..."+",ip="+req.ip);
   } catch (err) {
     logger.error(err);
     logger.error("Error in add comment-");
@@ -240,6 +240,7 @@ articleController.deleteComment = async (req, res) => {
     console.log(commentId)
     const data = await articleModel.deleteComment(id,commentId);
     res.send({success:true,data});
+    logger.info("Deleting comment..."+",ip="+req.ip)
   } catch (err) {
     logger.error(err);
     logger.error("Error in delete comment-");
@@ -253,7 +254,7 @@ articleController.likeArticle = async (req, res) => {
   try {
     const data = await articleModel.like(id,like);
     res.send(data)
-    logger.info("Adding like ...");
+    logger.info("Adding like ..."+",ip="+req.ip);
   } catch (error) {
     logger.error(error);
     logger.error("Error in add like-");
@@ -266,7 +267,7 @@ articleController.dislikeArticle = async (req, res) => {
   try {
     const data = await articleModel.dislike(id,dislike);
     res.send(data)
-    logger.info("Adding dislike ...");
+    logger.info("Adding dislike ..."+",ip="+req.ip);
   } catch (error) {
     logger.error(error);
     logger.error("Error in add dislike-");

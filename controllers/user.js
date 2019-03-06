@@ -12,7 +12,7 @@ userController.addUser = async (req, res) => {
   try {
     const res1 = await userModel.addUser(user);
     const success = res1 ? 1 : 0;
-    logger.info('Adding user...');
+    logger.info('Adding user...'+",ip="+req.ip);
     res.send({success});
   }
   catch (err) {
@@ -24,7 +24,7 @@ userController.addUser = async (req, res) => {
 userController.getUser = async (req, res) => {
   try {
     const users = await userModel.get();
-    logger.info('sending all users...');
+    logger.info('sending all users...'+",ip="+req.ip);
     res.send(users);
   }
   catch (err) {
@@ -36,7 +36,7 @@ userController.deleteUser = async (req, res) => {
   let email = req.body.email;
   try {
     const removeUser = await userModel.delete(email);
-    logger.info('Deleted User- ' + removeUser);
+    logger.info('Delete User- '+",ip="+req.ip);
     res.send('User successfully deleted');
   }
   catch (err) {
@@ -72,6 +72,7 @@ userController.checkUser = async (req, res) => {
       res.set('token', token); //设置响应头
     }
     res.send({ success, data, token });
+    logger.info('Find user'+",ip="+req.ip)
   } catch (err) {
     logger.error('Failed to find user-' + err);
     logger.error(err);
@@ -89,7 +90,6 @@ userController.uniqueEmail = async (req, res) => {
     const authority = data ? data.authority : -1;    //authority: 1.admin 0.user -1.用户不存在
     res.send({ result,authority})
   } catch (err) {
-    logger.error('Failed to find email-' + err);
     logger.error(err);
     res.send('Find failed..!');
   }
@@ -100,6 +100,7 @@ userController.changePower = async (req, res) => {
   try {
     await userModel.updateUser(id,power);
     res.send({success:true})
+    logger.info('ChangePower'+",ip="+req.ip)
   } catch (err) {
     console.log(err)
   }
@@ -110,7 +111,9 @@ userController.getLoginLog = async (req, res) => {
     let data = await userModel.get({ email })
     let success = data ? true :false;
     res.send({ success, data })
+    logger.info('getLoginLog'+",ip="+req.ip)
   } catch (err) {
+    logger.error(err)
     console.log(err)
   }
 }
