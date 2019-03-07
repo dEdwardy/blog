@@ -89,6 +89,7 @@ userController.uniqueEmail = async (req, res) => {
     const result = (data.length===0) ? 0 : 1;           //1. email存在 0 不存在
     const authority = data ? data.authority : -1;    //authority: 1.admin 0.user -1.用户不存在
     res.send({ result,authority})
+    logger.info('Unqiue Email...'+",ip="+req.ip)
   } catch (err) {
     logger.error(err);
     res.send('Find failed..!');
