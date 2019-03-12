@@ -27,7 +27,13 @@ articleRouter.get('/getComments',(req,res) => {
 articleRouter.post('/likeArticle',(req,res) => {
   articleController.likeArticle(req,res);
 })
+articleRouter.post('/cancelLikeArticle',(req,res) => {
+  articleController.cancelLikeArticle(req,res);
+})
 articleRouter.post('/dislikeArticle',(req,res) => {
   articleController.dislikeArticle(req,res);
+})
+articleRouter.post('/cancelDislikeArticle',(req,res) => {
+  articleController.cancelDislikeArticle(req,res);
 })
 export default articleRouter;

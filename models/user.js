@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { resolve } from "dns";
 
 const userSchema = new mongoose.Schema(
   {
@@ -8,7 +7,9 @@ const userSchema = new mongoose.Schema(
     authority: { type: Number, default: 0 }, //权限 默认0普通user   1 admin   2 禁止留言,评论  3 禁止登录
     email: { type: String, unique: true },
     avatar: { type: String, default: "/images/default.jpg" },
-    lastLoginTime: []
+    lastLoginTime: [],
+    like:[],
+    dislike:[]
   },
   {
     collection: "users",

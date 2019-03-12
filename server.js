@@ -16,7 +16,7 @@ import  path  from 'path';
 const whitelist = ['http://localhost:4200','http://localhost:8088','http://106.12.202.20','http://edw4rd.cn','http://www.edw4rd.cn']
 const corsOptions = {
   origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) > -1) {
+    if (whitelist.indexOf(origin) >= -1) {
       callback(null, true)
     } else {
       callback(new Error('Not allowed by CORS'))

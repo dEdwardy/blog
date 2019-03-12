@@ -1,7 +1,20 @@
 import mongoose from 'mongoose';
+import  userModel from './user'
 
 const ObjectId = mongoose.Types.ObjectId;
 const Schema = mongoose.Schema;
+//赞
+const likeSchema = new Schema({
+  email: { type:String },
+  username: { type: String },
+  avatar: { type: String, default: "/images/default.jpg" }
+});
+//踩
+const dislikeSchema = new Schema({
+  email: { type:String },
+  username: { type: String },
+  avatar: { type: String, default: "/images/default.jpg" }
+});
 //评论或留言
 const commentSchema = new Schema({
   avatar: { type:String },
@@ -20,8 +33,8 @@ const articleSchema = new Schema({
   can_delete: { type: Boolean, default: false },
   content: { type: String },
   image_url: { type: Array },
-  like: { type: Number, default: 0 },
-  dislike: { type: Number, default: 0 },
+  like: [likeSchema],
+  dislike: [dislikeSchema],
   comment: [commentSchema]
 }, {
     collection: 'articles',
@@ -108,13 +121,132 @@ articleModel.getComments = (id) => {
 };
 /**根据文章id 查找评论
  * @param id 文章id
- * @param like 1 like -1dislike
+ * @param info 
  * @returns {*}
  */
 articleModel.like = (id,like) => {
-  return articleModel.where({_id:ObjectId(id)}).update({ $inc:{ like } });
+  // return articleModel.where({_id:ObjectId(id)}).update({ $inc:{ like } });
+  //文章中记录人数
+  function article(){
+    return new Promise(resolve => {
+      resolve(
+        articleModel.findOneAndUpdate(
+          { _id: ObjectId(id) },
+          { $push: { like:{...like,$sort:{ create_date: -1}} } },
+          { new: true }
+        )
+      )
+    })
+  }
+  //用户信息中记录喜好的文章
+  function people(){
+    return new Promise(resolve => {
+      resolve(
+        userModel.findOneAndUpdate(
+          { email: like.email },
+          { $push: { like:id } },
+          { new: true }
+        )
+      )
+    })
+  }
+  return Promise.all([article(),people()])
 }
+articleModel.cancelLike = (id, email) => {
+   //文章中记录人数
+   function article(){
+    return new Promise(resolve => {
+      resolve(
+        articleModel.findOneAndUpdate(
+          { _id: ObjectId(id) },
+          { $pull:{ like: { email} } },
+          { new: true }
+        )
+      )
+    })
+  }
+  //用户信息中记录喜好的文章
+  function people(){
+    return new Promise(resolve => {
+      resolve(
+        userModel.findOneAndUpdate(
+          { email },
+          { $pull: { like:id } },
+          { new: true }
+        )
+      )
+    })
+  }
+  return Promise.all([article(),people()])
+};
+/**根据文章id 查找评论
+ * @param id 文章id
+ * @param info 
+ * @returns {*}
+ */
 articleModel.dislike = (id,dislike) => {
-  return articleModel.where({_id:ObjectId(id)}).update({ $inc:{ dislike } });
+  // return articleModel.where({_id:ObjectId(id)}).update({ $inc:{ dislike } });
+  // return articleModel.findOneAndUpdate(
+  //   { _id: ObjectId(id) },
+  //   { $push: { dislike:{...dislike,$sort:{ create_date: -1}} } },
+  //   { new: true }
+  // );
+  //文章中记录人数
+  function article(){
+    return new Promise(resolve => {
+      resolve(
+        articleModel.findOneAndUpdate(
+          { _id: ObjectId(id) },
+          { $push: { dislike:{...dislike,$sort:{ create_date: -1}} } },
+          { new: true }
+        )
+      )
+    })
+  }
+  //用户信息中记录喜好的文章
+  function people(){
+    return new Promise(resolve => {
+      resolve(
+        userModel.findOneAndUpdate(
+          { email: dislike.email },
+          { $push: { dislike:id } },
+          { new: true }
+        )
+      )
+    })
+  }
+  return Promise.all([article(),people()])
 }
+/**根据文章id 查找dislike项 并取消dislike状态
+ * @param id 文章id
+ * @param email 用户email
+ * @returns {*}
+ */
+articleModel.cancelDislike = (id, email) => {
+  //文章中记录人数
+  function article(){
+   return new Promise(resolve => {
+     resolve(
+       articleModel.findOneAndUpdate(
+         { _id: ObjectId(id) },
+         { $pull:{ dislike: { email} } },
+         { new: true }
+       )
+     )
+   })
+ }
+ //用户信息中记录喜好的文章
+ function people(){
+   return new Promise(resolve => {
+     resolve(
+       userModel.findOneAndUpdate(
+         { email },
+         { $pull: { dislike:id } },
+         { new: true }
+       )
+     )
+   })
+ }
+ return Promise.all([article(),people()])
+};
 export default articleModel;

@@ -250,28 +250,58 @@ articleController.deleteComment = async (req, res) => {
 articleController.getComments = async (req, res) => {};
 articleController.likeArticle = async (req, res) => {
   let id = req.body.id;
-  let like = req.body.like
+  let email = req.body.email;
+  let username = req.body.username;
+  let info = {email,username};
   try {
-    const data = await articleModel.like(id,like);
+    const data = await articleModel.like(id,info);
     res.send(data)
     logger.info("Adding like ..."+",ip="+req.ip);
   } catch (error) {
     logger.error(error);
-    logger.error("Error in add like-");
-    res.send("Got error in add like");
+    logger.error("Error in add like article-");
+    res.send("Got error in add like article");
+  }
+}
+articleController.cancelLikeArticle = async (req, res) => {
+  let id = req.body.id;
+  let email = req.body.email;
+  try {
+    const data = await articleModel.cancelLike(id,email);
+    res.send(data)
+    logger.info("Canceling like article ..."+",ip="+req.ip);
+  } catch (error) {
+    logger.error(error);
+    logger.error("Error in cancel like article-");
+    res.send("Got error in cancel like article");
   }
 }
 articleController.dislikeArticle = async (req, res) => {
   let id = req.body.id;
-  let dislike = req.body.dislike
+  let email = req.body.email;
+  let username = req.body.username;
+  let info = {email,username};
   try {
-    const data = await articleModel.dislike(id,dislike);
+    const data = await articleModel.dislike(id,info);
     res.send(data)
     logger.info("Adding dislike ..."+",ip="+req.ip);
   } catch (error) {
     logger.error(error);
-    logger.error("Error in add dislike-");
-    res.send("Got error in add dislike");
+    logger.error("Error in add dislike article-");
+    res.send("Got error in add dislike article");
+  }
+}
+articleController.cancelDislikeArticle = async (req, res) => {
+  let id = req.body.id;
+  let email = req.body.email;
+  try {
+    const data = await articleModel.cancelDislike(id,email);
+    res.send(data)
+    logger.info("Canceling like article ..."+",ip="+req.ip);
+  } catch (error) {
+    logger.error(error);
+    logger.error("Error in cacel dislike article-");
+    res.send("Got error in cacel dislike article");
   }
 }
 export default articleController;
